@@ -1,0 +1,29 @@
+{
+  "generator-ngx-rocket": {
+    "version": "9.2.0",
+    "props": {
+      "location": "path",
+      "strict": false,
+      "skipInstall": false,
+      "skipQuickstart": false,
+      "initGit": true,
+      "usePrefix": true,
+      "appName": "bodys-perfect-diet",
+      "target": ["web"],
+      "pwa": true,
+      "ui": "material",
+      "layout": "side-menu",
+      "auth": true,
+      "lazy": false,
+      "angulartics": false,
+      "languages": ["en-US"],
+      "tools": ["prettier"],
+      "utility": ["lodash", "datefns"],
+      "deploy": "none",
+      "projectName": "bodys-perfect-diet",
+      "packageManager": "npm",
+      "mobile": [],
+      "desktop": []
+    }
+  }
+}

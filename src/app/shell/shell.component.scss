@@ -1,0 +1,64 @@
+:host {
+  display: flex;
+  flex: 1;
+}
+
+.mat-sidenav {
+  min-width: 255px;
+  max-width: 28%;
+  background-color: #363740;
+}
+
+.main-logo {
+  margin: 20px 20px;
+}
+
+.has-border {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.mat-list {
+  padding-top: 0;
+}
+
+.mat-list-item {
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.menu-button {
+  margin-right: 1rem;
+}
+
+/* custom styles */
+.nav-elements {
+  a {
+    color: #a4a6b3;
+  }
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.button-spacing {
+  margin-left: 10px;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info {
+  top: 10px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}

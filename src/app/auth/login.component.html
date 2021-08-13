@@ -1,0 +1,135 @@
+<div class="mat-typography container-fluid">
+  <div class="row">
+    <div class="col-6 pl-0 pr-0 d-none d-lg-block">
+      <div class="login-img-wrapper">
+        <div class="login-text">
+          <header>
+            <h2 class="text-uppercase text-quote">#makeithappen</h2>
+          </header>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-6 col-md-6 login-col-wrapper">
+      <div class="login-container ff-14" *ngIf="loginSession">
+        <mat-card class="login-box" [@fadeIn]>
+          <form (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
+            <div class="login-error" [hidden]="!error || isLoading" translate>Username or password incorrect.</div>
+            <br />
+            <div class="login-fields" fxLayout="column">
+              <mat-form-field [hideRequiredMarker]="true" appearance="outline" class="w-100">
+                <mat-label>Username</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="username"
+                  autocomplete="username"
+                  [placeholder]="'Username' | translate"
+                  required
+                />
+                <mat-error *ngIf="loginForm.controls.username.invalid && loginForm.controls.username.touched">
+                  <span translate>Username is required</span>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field [hideRequiredMarker]="true" appearance="outline">
+                <mat-label>Password</mat-label>
+                <input
+                  type="password"
+                  matInput
+                  formControlName="password"
+                  autocomplete="current-password"
+                  [placeholder]="'Password' | translate"
+                  [type]="hide ? 'password' : 'text'"
+                  required
+                />
+                <mat-icon class="cursor-pointer" matSuffix (click)="hide = !hide">{{
+                  hide ? 'visibility_off' : 'visibility'
+                }}</mat-icon>
+                <mat-error *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched">
+                  <span translate>Password is required</span>
+                </mat-error>
+              </mat-form-field>
+              <!-- <mat-slide-toggle color="primary" formControlName="remember" translate>Remember me</mat-slide-toggle> -->
+              <br />
+              <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading">
+                <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+                <span translate>Login</span>
+              </button>
+              <span class="text-center">Don't have an account?</span>
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="registerSession = !registerSession; loginSession = !loginSession"
+              >
+                <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+                <span translate>Register</span>
+              </button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
+
+      <div class="login-container ff-14" *ngIf="registerSession">
+        <mat-card class="login-box" [@fadeIn]>
+          <form (ngSubmit)="register()" [formGroup]="registerForm" novalidate>
+            <br />
+            <div class="login-fields" fxLayout="column">
+              <mat-form-field [hideRequiredMarker]="true" appearance="outline" class="w-100">
+                <mat-label>Name</mat-label>
+                <input type="text" matInput formControlName="name" [placeholder]="'Name' | translate" required />
+                <mat-error *ngIf="registerForm.controls.name.invalid && registerForm.controls.name.touched">
+                  <span translate>Name is required</span>
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field [hideRequiredMarker]="true" appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input type="text" matInput formControlName="email" [placeholder]="'Email' | translate" required />
+                <mat-error *ngIf="registerForm.controls.email.invalid && registerForm.controls.email.touched">
+                  <span translate>Email is required</span>
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field [hideRequiredMarker]="true" appearance="outline" class="w-100">
+                <mat-label>Password</mat-label>
+                <input
+                  type="password"
+                  matInput
+                  formControlName="password"
+                  [placeholder]="'Password' | translate"
+                  required
+                />
+                <mat-error *ngIf="registerForm.controls.password.invalid && registerForm.controls.password.touched">
+                  <span translate>Password is required</span>
+                </mat-error>
+              </mat-form-field>
+
+              <br />
+              <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading">
+                <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+                <span translate>Register</span>
+              </button>
+              <span class="text-center">Already have an account?</span>
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="registerSession = !registerSession; loginSession = !loginSession"
+              >
+                <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+                <span translate>Login</span>
+              </button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  <!-- <div>
+    <h1 fxLayoutAlign="center" translate>APP_NAME</h1>
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem">
+      <h4 class="version">v{{ version }}</h4>
+      <app-language-selector></app-language-selector>
+    </div>
+  </div> -->
+</div>

@@ -1,0 +1,201 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <!-- <button mat-button class="button-primary" type="button" (click)="newProfile(profileContent)">New Profile</button> -->
+      <div class="mt-4">
+        <button mat-button class="button-primary" type="button" (click)="newEmployee(employeeContent)">
+          New Employee
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- <div class="col-lg-12 mt-5">
+      <div class="text-center">
+        <h5>Employees</h5>
+      </div>
+    </div> -->
+
+    <div class="col-lg-12">
+      <div class="table-wrapper mt-3 mb-3">
+        <div class="card card-primary">
+          <div class="mat-elevation-z0">
+            <table mat-table [dataSource]="dataSource" class="w-100">
+              <!-- Username Column -->
+              <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef>Username</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.username }}</td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.status }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let row" class="text-center">
+                  <button mat-flat-button color="warn" type="button" (click)="deleteEmp(row.id)">
+                    <mat-icon aria-hidden="false" aria-label="Delete icon">delete</mat-icon>
+                    Delete
+                  </button>
+                  <button
+                    mat-icon-button
+                    [matMenuTriggerFor]="menu"
+                    aria-label="Example icon-button with a menu"
+                    [matMenuTriggerData]="{ data: row }"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <!-- Row shown when there is no matching data. -->
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data found.</td>
+              </tr>
+            </table>
+
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #employeeContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">New Employee</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="newEmployeeForm" (ngSubmit)="addEmployee($event)">
+    <div class="modal-body ff-14">
+      <mat-form-field class="example-full-width w-100" appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput placeholder="Username" formControlName="username" autocomplete="off" />
+        <mat-error *ngIf="newEmployeeForm.get('username')?.hasError('required')"> Username is Required! </mat-error>
+        <mat-error *ngIf="newEmployeeForm.get('username')?.hasError('minlength')">
+          Username should be atleast 4 characters long!
+        </mat-error>
+        <mat-error *ngIf="newEmployeeForm.get('username')?.hasError('maxlength')">
+          Username can be atmax 20 characters long!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width w-100 mt-2" appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Password" formControlName="password" name="password" autocomplete="off" />
+        <mat-error *ngIf="newEmployeeForm.get('password')?.hasError('required')"> Password is Required! </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100 mt-2">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statuses" value="{{ status }}">
+            {{ status }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="newEmployeeForm.get('status')?.hasError('required')"> Status is Required! </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="newEmployeeForm.invalid">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-data="data">
+    <button mat-menu-item type="button" (click)="editEmployee(profileContent, data)">
+      <mat-icon>edit</mat-icon>
+      <span>Edit</span>
+    </button>
+
+    <button mat-menu-item type="button" (click)="changePassword(changePasswordContent, data)">
+      <mat-icon>vpn_key</mat-icon>
+      <span>Change Password</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<ng-template #profileContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Employee</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="editEmployeeForm" (ngSubmit)="patchEmployee(selectedEmpID)">
+    <div class="modal-body ff-14">
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput placeholder="Username" formControlName="username" name="" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select formControlName="status" placeholder="Status" [compareWith]="compareStatus">
+            <mat-option [value]="status" *ngFor="let status of statuses">{{ status }} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="editEmployeeForm.invalid">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #changePasswordContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Change Password</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+    <div class="modal-body ff-14">
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>New Password</mat-label>
+          <input matInput placeholder="New Password" formControlName="newPassword" name="newPassword" />
+          <mat-error *ngIf="changePasswordForm.get('newPassword')?.hasError('required')">
+            Password is Required!
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field class="example-full-width w-100 mt-2" appearance="outline">
+          <mat-label>Confirm New Password</mat-label>
+          <input
+            matInput
+            placeholder="Confirm New Password"
+            formControlName="confirmNewPassword"
+            name="confirmNewPassword"
+          />
+          <mat-error *ngIf="changePasswordForm.get('confirmNewPassword')?.hasError('required')">
+            Confirm Password is Required!
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="changePasswordForm.invalid">
+        Update Password
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- <div class="" ></div> -->
+<ngx-ui-loader></ngx-ui-loader>

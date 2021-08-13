@@ -1,0 +1,149 @@
+/*
+ * Entry point of global application style.
+ * Component-specific style should not go here and be included directly as part of the components.
+ */
+
+// Theme variables, must be included before the libraries to allow overriding defaults
+@import "theme/theme-variables";
+
+// 3rd party libraries
+@import "~material-design-icons-iconfont/src/material-design-icons";
+
+// Angular Material custom theme
+// The mixins below must be included once so we separated them from the variables
+@import "~@angular/material/theming";
+
+@import "~bootstrap/scss/bootstrap";
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($app-theme);
+
+// Theme customization
+@import "theme/theme";
+
+/* common styles */
+// ::ng-deep .mat-sort-header-container {
+//     display:flex;
+//     justify-content:center;
+//   }
+
+.btn-grey {
+  background-color: #363740;
+  border-radius: 20px;
+  width: 100px;
+  color: #fff;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* utilities */
+.ml-5 {
+  margin-left: 10px;
+}
+
+.bg-main {
+  background-color: #f7f8fc;
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.mat-toolbar-row,
+.mat-toolbar-single-row {
+  height: 40px !important;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+th.mat-header-cell {
+  text-align: center !important;
+}
+
+simple-snack-bar {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container {
+  z-index: 99999 !important;
+}
+
+/* theme color classes */
+.mat-theme-green {
+  background-color: #29cc97;
+  color: #fff;
+}
+
+.button-primary {
+  background-color: #363740;
+  color: #fff;
+}
+
+.ff-14 {
+  font-size: 12px !important;
+}
+
+.mat-form-field-subscript-wrapper {
+  top: 40px !important;
+}
+
+.mat-button.mat-primary.mat-button-disabled,
+.mat-button.mat-accent.mat-button-disabled,
+.mat-button.mat-warn.mat-button-disabled,
+.mat-button.mat-button-disabled.mat-button-disabled,
+.mat-icon-button.mat-primary.mat-button-disabled,
+.mat-icon-button.mat-accent.mat-button-disabled,
+.mat-icon-button.mat-warn.mat-button-disabled,
+.mat-icon-button.mat-button-disabled.mat-button-disabled,
+.mat-stroked-button.mat-primary.mat-button-disabled,
+.mat-stroked-button.mat-accent.mat-button-disabled,
+.mat-stroked-button.mat-warn.mat-button-disabled,
+.mat-stroked-button.mat-button-disabled.mat-button-disabled {
+  background-color: lightgray !important;
+  color: #fff !important;
+  cursor: not-allowed;
+}
+
+.blue-snackbar {
+  background: #04151f;
+}
+
+.mat-theme-color-one {
+  background-color: #3751ff;
+  color: #fff;
+}
+
+/* utilities */
+.pl-0 {
+  padding-left: 0 !important;
+}
+.pr-0 {
+  padding-right: 0 !important;
+}
+.cursor-pointer {
+  cursor: pointer !important;
+}

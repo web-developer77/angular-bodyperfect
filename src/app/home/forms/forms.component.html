@@ -1,0 +1,189 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="mt-4">
+        <button mat-button class="button-primary" type="button" (click)="newForm(formContent)">New Forms</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="table-wrapper mt-3 mb-3">
+        <div class="card card-primary">
+          <div class="mat-elevation-z0">
+            <table mat-table [dataSource]="dataSource" class="w-100">
+              <!-- Username Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.status }}</td>
+              </ng-container>
+
+              <ng-container *ngIf="isAdmin" matColumnDef="formowner">
+                <th mat-header-cell *matHeaderCellDef>Form owner</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.formowner }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef>createdAt</th>
+                <td mat-cell *matCellDef="let row" class="text-center">{{ row.createdAt }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let row" class="text-center">
+                  <button mat-flat-button color="warn" type="button" (click)="deleteForm(row.id)">
+                    <mat-icon aria-hidden="false" aria-label="Delete icon">delete</mat-icon>
+                    Delete
+                  </button>
+                  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+                    [matMenuTriggerData]="{ data: row }">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="colDef"></tr>
+              <tr mat-row *matRowDef="let row; columns: colDef"></tr>
+
+              <!-- Row shown when there is no matching data. -->
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data found.</td>
+              </tr>
+            </table>
+
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #formContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">New Form</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="addFormsForm" (ngSubmit)="addForm($event)">
+    <div class="modal-body ff-14">
+      <mat-form-field class="example-full-width w-100" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="name" formControlName="name" autocomplete="off" />
+        <mat-error *ngIf="addFormsForm.get('name')?.hasError('required')"> Formname is Required! </mat-error>
+        <mat-error *ngIf="addFormsForm.get('name')?.hasError('minlength')">
+          Formname should be atleast 4 characters long!
+        </mat-error>
+        <mat-error *ngIf="addFormsForm.get('name')?.hasError('maxlength')">
+          Formname can be atmax 20 characters long!
+        </mat-error>
+      </mat-form-field>
+
+      <div *ngFor="let contain of containers">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field class="example-full-width w-100 mt-2 cus-padding" appearance="outline">
+            <mat-label>Questions</mat-label>
+            <input matInput placeholder="questions" formControlName="questions" name="questions" autocomplete="off"
+              class="width-80" />
+            <mat-error *ngIf="addFormsForm.get('questions')?.hasError('required')"> Questions is Required! </mat-error>
+          </mat-form-field>
+          <button type="button" (click)="addQuestion()" class="btn btn-light cus-button">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-label class="custom-label">Answers :</mat-label>
+          <mat-form-field appearance="outline" class="w-90 mt-2">
+            <mat-label class="custom-label">Answers</mat-label>
+            <mat-select formControlName="answer" (selectionChange)="onAnswerChange($event)">
+              <mat-option *ngFor="let answer of answers" value="{{ answer }}">
+                {{ answer }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="addFormsForm.get('answer')?.hasError('required')"> Answers is Required! </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngFor="let acontain of acontainers">
+          <div fxLayout="row wrap" fxLayoutAlign="start center">
+            <div *ngFor="let btncontain of btncontainers">
+              <button type="button" class="btn btn-light margin-right-1 margin-bottom-1">
+                Button
+              </button>
+            </div>
+            <button type="button" (click)="addButton()" class="btn btn-light cus-ans-button">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div *ngFor="let icontain of icontainers">
+          <div fxLayout="row wrap" fxLayoutAlign="start center">
+            <div *ngFor="let inputcontain of inputcontainers">
+              <mat-form-field class="example-full-width w-80 margin-right-5 margin-bottom-1" appearance="outline">
+                <mat-label>Input</mat-label>
+                <input matInput placeholder="name" formControlName="name" autocomplete="off" />
+              </mat-form-field>
+            </div>
+            <button type="button" (click)="addInput()" class="btn btn-light cus-input-button">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-data="data">
+    <button mat-menu-item type="button" (click)="editForm(editFormContent, data)">
+      <mat-icon>edit</mat-icon>
+      <span>Edit</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<ng-template #editFormContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Employee</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="editFormsForm" (ngSubmit)="patchForm(selectedFormID)">
+    <div class="modal-body ff-14">
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput placeholder="Username" formControlName="username" name="" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select formControlName="answer" placeholder="Answers" [compareWith]="compareAnswer">
+            <mat-option [value]="answer" *ngFor="let answer of answers">{{ answer }} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="editFormsForm.invalid">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- <div class="" ></div> -->
+<ngx-ui-loader></ngx-ui-loader>

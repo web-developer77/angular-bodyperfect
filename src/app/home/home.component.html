@@ -1,0 +1,433 @@
+<div class="container">
+  <div class="row stat-row">
+    <!-- <div class="col-12">
+      <div class="position-absolute user-info">
+        <span>userName </span>
+        <mat-icon aria-hidden="false" aria-label="user" class="ml-5">account_circle</mat-icon>
+      </div>
+    </div> -->
+    <div class="col-lg-3 col-12" (click)="currentActive('all')">
+      <div
+        class="card card-primary p-3 d-flex justify-content-center align-items-center pointer"
+        [ngClass]="currentActiveTab == 'all' ? 'card-active' : 'card-primary'"
+      >
+        <div class="card-text">All</div>
+
+        <div class="card-number mt-3">{{ numberOfCustomers }}</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-12" (click)="currentActive('active')">
+      <div
+        class="card p-3 d-flex justify-content-center align-items-center pointer"
+        [ngClass]="currentActiveTab == 'active' ? 'card-active' : 'card-primary'"
+      >
+        <div class="card-text">Active</div>
+
+        <div class="card-number mt-3">{{ numberOfActiveCustomers }}</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-12" (click)="currentActive('inactive')">
+      <div
+        class="card p-3 d-flex justify-content-center align-items-center pointer"
+        [ngClass]="currentActiveTab == 'inactive' ? 'card-active' : 'card-primary'"
+      >
+        <div class="card-text">Inactive</div>
+
+        <div class="card-number mt-3">{{ numberOfInactiveCustomers }}</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-12" (click)="currentActive('completed')">
+      <div
+        class="card p-3 d-flex justify-content-center align-items-center pointer"
+        [ngClass]="currentActiveTab == 'completed' ? 'card-active' : 'card-primary'"
+      >
+        <div class="card-text">Completed</div>
+
+        <div class="card-number mt-3">{{ numberOfCompletedCustomers }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="table-wrapper mt-3">
+        <div class="card card-primary">
+          <div class="mat-elevation-z0">
+            <table mat-table [dataSource]="dataSource" class="w-100">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let row">
+                  <span *ngIf="row.name; else showTeleName">{{ row.name }}</span>
+                  <ng-template #showTeleName>{{ row.telegramName }}</ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef>Phone/Telegram Chat ID</th>
+                <td mat-cell *matCellDef="let row">{{ row.phone !== null ? row.phone : row.telegramChatId }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="customerId">
+                <th mat-header-cell *matHeaderCellDef>Customer ID</th>
+                <td mat-cell *matCellDef="let row">
+                  <span *ngIf="row.customerId; else showChatId">
+                    {{ row.customerId }}
+                  </span>
+                  <ng-template #showChatId>N/A</ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="supervisor">
+                <th mat-header-cell *matHeaderCellDef>Supervisor</th>
+                <td mat-cell *matCellDef="let row">
+                  <span *ngIf="row.supervisor; else noSupervisor">
+                    {{ row.supervisor.username }}
+                  </span>
+                  <ng-template #noSupervisor>N/A</ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="program">
+                <th mat-header-cell *matHeaderCellDef>Program</th>
+                <td mat-cell *matCellDef="let row">
+                  <span *ngIf="row.activeProgram && row.activeProgram.name; else noProgramName">
+                    {{ row.activeProgram.name }}
+                  </span>
+                  <ng-template #noProgramName>N/A</ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="timeRemaining">
+                <th mat-header-cell *matHeaderCellDef>Time Remaining</th>
+                <td mat-cell *matCellDef="let row">{{ row.timeRemaining }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let row">
+                  <button
+                    mat-flat-button
+                    color="theme-green"
+                    type="button"
+                    (click)="viewCustomerDetails(content, row.id)"
+                  >
+                    View
+                  </button>
+                  <button
+                    mat-icon-button
+                    *ngIf="isAdmin"
+                    [matMenuTriggerFor]="menu"
+                    [matMenuTriggerData]="{ data: row }"
+                    aria-label="Example icon-button with a menu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <!-- Row shown when there is no matching data. -->
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data found.</td>
+              </tr>
+            </table>
+            <mat-paginator #paginatorMessages [pageSizeOptions]="[10]" showFirstLastButtons="false" hidePageSize="true">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="" ></div> -->
+</div>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-data="data">
+    <button mat-menu-item type="button" (click)="deleteCustomer(deleteCustomerContent, data)">
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+    <button mat-menu-item type="button" (click)="editProfile(profileContent, data)">
+      <mat-icon>edit</mat-icon>
+      <span>Edit</span>
+    </button>
+
+    <!-- <button mat-menu-item type="button" (click)="openDialog()">
+      <mat-icon>edit</mat-icon>
+      <span>message</span>
+    </button> -->
+
+    <!-- <button mat-button (click)="openDialog()">Message</button> -->
+  </ng-template>
+</mat-menu>
+
+<ng-template #profileContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Edit User</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="editCustomerForm" (ngSubmit)="editCustomer(selectedCustomerID)">
+    <div class="modal-body ff-14">
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Email" formControlName="email" name="email" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>Initial Weight</mat-label>
+          <input
+            matInput
+            placeholder="Initial Weight"
+            type="number"
+            formControlName="initialWeight"
+            name="initialWeight"
+          />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>Phone Number</mat-label>
+          <input matInput placeholder="Phone Number" formControlName="phone" name="phone" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select formControlName="supervisor" placeholder="Supervisor" [compareWith]="compareSupervisor">
+            <mat-option [value]="supervisor" *ngFor="let supervisor of supervisors"
+              >{{ supervisor.username }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select formControlName="activeProgram" placeholder="Program" [compareWith]="compareProgram">
+            <mat-option [value]="program" *ngFor="let program of programs">{{ program.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="editCustomerForm.invalid">Submit</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #deleteCustomerContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title d-flex align-items-center">
+      <mat-icon aria-hidden="false" aria-label="warning icon">warning</mat-icon
+      ><span class="margin-left-5">Confirmation</span>
+    </h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body ff-14">
+    <span
+      >Are you sure you want to delete <span class="text-bold">{{ selectedCustomerName }}</span
+      >?</span
+    >
+  </div>
+  <div class="modal-footer">
+    <button mat-button class="button-primary margin-right-10" (click)="modal.dismiss('Cross click')" type="button">
+      Cancel
+    </button>
+    <button mat-button class="delete-btn" type="button" (click)="patchCustomer(selectedCustomerID)">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #messageTemplate let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Messages</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body ff-14">
+    <table mat-table [dataSource]="messageDataSource" class="w-100">
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef>From</th>
+        <td mat-cell *matCellDef="let row">{{ row.from !== null ? row.from : 'N/A' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="text">
+        <th mat-header-cell *matHeaderCellDef>Text</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.text !== null ? row.text : 'N/A' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="timestamp">
+        <th mat-header-cell *matHeaderCellDef>timestamp</th>
+        <td mat-cell *matCellDef="let row">{{ row.createdAt !== null ? (row.createdAt | date: 'short') : 'N/A' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="messageDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: messageDisplayedColumns"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data found.</td>
+      </tr>
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[10]" showFirstLastButtons="false" hidePageSize="true">
+    </mat-paginator>
+  </div>
+  <div class="ff-14">
+    <form [formGroup]="sendMessageForm" (ngSubmit)="sendTelegramMessage($event, selectedCustomer.telegramChatId)">
+      <div class="message-form">
+        <div>
+          <mat-form-field class="example-full-width w-100 mt-2" appearance="outline">
+            <mat-label>Message</mat-label>
+            <textarea matInput placeholder="Message" formControlName="message" name="message"></textarea>
+            <mat-error *ngIf="sendMessageForm.get('message')?.hasError('required')"> Message is Required! </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-3 mt-3">
+          <button mat-button class="button-primary" type="submit" [disabled]="sendMessageForm.invalid">Send</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <span *ngIf="selectedCustomer.fullName; else showTeleName">{{ selectedCustomer.fullName }}</span>
+      <ng-template #showTeleName>{{ selectedCustomer.telegramName }}</ng-template>
+      <button
+        mat-button
+        class="button-primary"
+        type="button"
+        (click)="sendMessage(messageTemplate, selectedCustomer.telegramChatId)"
+      >
+        <span class="ml-3">Message</span>
+      </button>
+      <!-- <button mat-button (click)="openDialog()">Message</button> -->
+    </h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-4">
+        <mat-card class="info-card">
+          <div>
+            Customer ID:
+            <span>{{ selectedCustomer.customerId !== null ? selectedCustomer.customerId : 'N/A' }}</span>
+          </div>
+          <div>
+            Phone Number:
+            <span>{{
+              selectedCustomer.phone !== null ? selectedCustomer.phone : selectedCustomer.telegramChatId
+            }}</span>
+          </div>
+          <div>
+            Email: <span>{{ selectedCustomer.email !== null ? selectedCustomer.email : 'N/A' }}</span>
+          </div>
+          <div>
+            DOB: <span>{{ selectedCustomer.dob !== null ? selectedCustomer.dob : 'N/A' }}</span>
+          </div>
+        </mat-card>
+      </div>
+      <div class="col-sm-4">
+        <mat-card class="info-card">
+          <div>Product Type: <span>N/A</span></div>
+          <div>
+            Height: <span>{{ selectedCustomer.height !== null ? selectedCustomer.height : 'N/A' }}</span>
+          </div>
+          <div>
+            Initial Weight:
+            <span>{{ selectedCustomer.initialWeight !== null ? selectedCustomer.initialWeight : 'N/A' }}</span>
+          </div>
+          <div>Last/Current Weight: <span>N/A</span></div>
+        </mat-card>
+      </div>
+      <div class="col-sm-4" *ngIf="isAdmin">
+        <mat-card class="info-card">
+          <div>
+            Moneyback:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentMoneyback" (change)="userPreference('moneyback')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Instagram:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentInsta" (change)="userPreference('insta')"></mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Food Questions:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentFoodQuestions" (change)="userPreference('foodQuestions')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Sleep Questions:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentSleepQuestions" (change)="userPreference('sleepQuestions')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Weight Questions:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentWeightQuestions" (change)="userPreference('weightQuestions')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Food Recommendations:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentFood" (change)="userPreference('foodRecommendations')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+          <div>
+            Diagram:
+            <span>
+              <mat-slide-toggle [(ngModel)]="currentSleepDiagram" (change)="userPreference('diagram')">
+              </mat-slide-toggle>
+              <mat-icon aria-hidden="false" aria-label="lock icon">lock</mat-icon>
+            </span>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-sm-12">
+        <h5>Diagram</h5>
+        <!-- <mat-card class="plot-card"> -->
+        <app-line-chart [customer]="selectedCustomer"></app-line-chart>
+        <!-- </mat-card> -->
+      </div>
+    </div>
+  </div>
+  <!-- <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+  </div> -->
+</ng-template>
+<ngx-ui-loader></ngx-ui-loader>

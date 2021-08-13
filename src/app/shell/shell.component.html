@@ -1,0 +1,170 @@
+<div fxFlex>
+  <mat-sidenav-container fxFill>
+    <mat-sidenav
+      #sidenav
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="!isMobile"
+      [disableClose]="!isMobile"
+      ngClass.gt-sm="has-border"
+    >
+      <!-- <mat-toolbar color="primary">
+        <span translate>APP_NAME</span>
+        <div fxFlex></div>
+        <div>
+          <button mat-icon-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>person</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <mat-list>
+              <mat-list-item>
+                <span translate>Logged in as</span>&nbsp;<b>{{ username }}</b>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </mat-list>
+            <button mat-menu-item (click)="logout()" translate>Logout</button>
+          </mat-menu>
+        </div>
+        <app-language-selector icon="true"></app-language-selector>
+      </mat-toolbar> -->
+      <nav class="nav-elements">
+        <mat-list>
+          <div class="main-logo">
+            <img src="assets/logo.svg" />
+          </div>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/home" routerLinkActive="active" (click)="isMobile && sidenav.close()">
+            <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
+            <span translate class="ml-5">Home</span>
+          </a>
+          <mat-divider></mat-divider>
+          <span *ngIf="isAdmin">
+            <a mat-list-item routerLink="/home/program" routerLinkActive="active" (click)="isMobile && sidenav.close()">
+              <mat-icon aria-hidden="false" aria-label="Example home icon">notes</mat-icon>
+              <span translate class="ml-5">Program</span>
+            </a>
+            <mat-divider></mat-divider>
+          </span>
+
+          <a
+            mat-list-item
+            routerLink="/home/recommendations"
+            routerLinkActive="active"
+            (click)="isMobile && sidenav.close()"
+          >
+            <mat-icon aria-hidden="false" aria-label="Example home icon">lightbulb</mat-icon>
+            <span translate class="ml-5">Recommendations</span>
+          </a>
+          <mat-divider></mat-divider>
+          <span *ngIf="isAdmin">
+            <a
+              mat-list-item
+              routerLink="/home/employees"
+              routerLinkActive="active"
+              (click)="isMobile && sidenav.close()"
+            >
+              <mat-icon aria-hidden="false" aria-label="Example home icon">people</mat-icon>
+              <span translate class="ml-5">Employees</span>
+            </a>
+            <mat-divider></mat-divider>
+          </span>
+          <span *ngIf="isAdmin">
+            <a mat-list-item routerLink="/home/forms" routerLinkActive="active" (click)="isMobile && sidenav.close()">
+              <mat-icon aria-hidden="false" aria-label="Example home icon">layers</mat-icon>
+              <span translate class="ml-5">Forms</span>
+            </a>
+            <mat-divider></mat-divider>
+          </span>
+          <a mat-list-item routerLink="/about" routerLinkActive="active" (click)="logout()">
+            <mat-icon aria-hidden="false" aria-label="Example home icon">logout</mat-icon>
+            <span translate class="ml-5">Logout</span>
+          </a>
+          <mat-divider></mat-divider>
+        </mat-list>
+      </nav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar class="bg-main position-relative">
+        <button class="menu-button" mat-icon-button (click)="sidenav.toggle()" fxHide.gt-sm>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="header-wrapper">
+              <div class="text-center">
+                <h5>{{ title }}</h5>
+              </div>
+              <!-- <div>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">notifications</mat-icon>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        <!-- <span class="text-bold">{{ title }}</span> -->
+      </mat-toolbar>
+      <div class="position-absolute user-info">
+        <span>{{ userName }}</span>
+        <button
+          class="button-spacing"
+          mat-mini-fab
+          color="theme-color-one"
+          aria-label="user icon"
+          [matMenuTriggerFor]="menu"
+        >
+          <mat-icon aria-hidden="false" aria-label="user">account_circle</mat-icon>
+        </button>
+      </div>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item type="button" (click)="changePassword(changePasswordContent)">
+      <mat-icon>vpn_key</mat-icon>
+      <span>Change Password</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<ng-template #changePasswordContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Change Password</h4>
+    <button type="button" class="btn btn-light" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+    <div class="modal-body ff-14">
+      <div>
+        <mat-form-field class="example-full-width w-100" appearance="outline">
+          <mat-label>New Password</mat-label>
+          <input matInput placeholder="New Password" formControlName="newPassword" name="newPassword" />
+          <mat-error *ngIf="changePasswordForm.get('newPassword')?.hasError('required')">
+            Password is Required!
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field class="example-full-width w-100 mt-2" appearance="outline">
+          <mat-label>Confirm New Password</mat-label>
+          <input
+            matInput
+            placeholder="Confirm New Password"
+            formControlName="confirmNewPassword"
+            name="confirmNewPassword"
+          />
+          <mat-error *ngIf="changePasswordForm.get('confirmNewPassword')?.hasError('required')">
+            Confirm Password is Required!
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button mat-button class="button-primary" type="submit" [disabled]="changePasswordForm.invalid">
+        Update Password
+      </button>
+    </div>
+  </form>
+</ng-template>

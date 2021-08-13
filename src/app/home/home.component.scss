@@ -1,0 +1,99 @@
+.container {
+  text-align: center;
+  padding: 1em;
+}
+
+.logo {
+  width: 150px;
+  margin: 0 auto;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .stat-row {
+    max-width: 65%;
+    min-width: 65%;
+    .card {
+      margin-top: 10px;
+    }
+  }
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.margin-left-5 {
+  margin-left: 5px;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.delete-btn {
+  background-color: red;
+  color: #fff;
+}
+
+q {
+  font-style: italic;
+  quotes: "« " " »";
+}
+
+.card-text {
+  color: #9fa2b4;
+  font-weight: 600;
+}
+
+.card-number {
+  color: #252733;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.plot-card {
+  max-height: 300px;
+}
+
+.info-card {
+  min-height: 200px;
+  div {
+    display: flex;
+    justify-content: space-between;
+    span {
+      display: flex;
+      margin-left: 5px;
+    }
+  }
+}
+
+.light-blue-backdrop {
+  background-color: #5cb3fd;
+}
+
+.card-primary {
+  background-color: #fff;
+}
+
+.card-active {
+  .card-text {
+    color: #3751ff !important;
+  }
+  .card-number {
+    color: #3751ff !important;
+  }
+  border: 1px solid #3751ff;
+}
+
+::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+}
+
+.message-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
